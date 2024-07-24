@@ -1,12 +1,12 @@
 const { where } = require('sequelize');
 const db = require('../models');
-const kuekacang = db.kuekacang
+const Peserta = db.peserta
 
 
 exports.readAll = async (req, res) => {
 
 
-    await kuekacang.findAll({where: {id: "1" }})
+    await Peserta.findAll({where: {id: "1" }})
         .then(data => {
             res.send(data);
         })
@@ -22,29 +22,27 @@ exports.readAll = async (req, res) => {
     //Create Data
 
     exports.create = async (req, res) => { 
- 
+
         console.log(req.body)
         
-         const data_kuekacang = {
+         const data_peserta = {
         
             elemenData: req.body.elemenData,
-            //kuekacang
+        
             nama: req.body.nama,
-            harga: req.body.harga,
-            deskripsi: req.body.deskripsi,
-            rasa: req.body.rasa,
-            
+            alamat: req.body.alamat,
+        
         }
         
-        console.log("data_",data_kuekacang)  
+        console.log("data_peserta",data_peserta)  
         
-          await kuekacang.create(data_kuekacang) //menyimpan data_peserta ke table peserta
+          await Peserta.create(data_peserta) //menyimpan data_peserta ke table peserta
         
           .then(data => {
         
             res.send({
         
-              message: "Data berhasil dimasukkan!"
+              message: "Data was insert successfully."
         
             })
         
@@ -71,7 +69,7 @@ exports.readAll = async (req, res) => {
 
             const id = req.params.id
           
-            await kuekacang.update(req.body, { where: { id: id}})
+            await Peserta.update(req.body, { where: { id: id}})
           
             .then(num => {
           
@@ -107,7 +105,7 @@ exports.readAll = async (req, res) => {
 
             const id = req.params.id
           
-            await kuekacang.destroy({ where: { 
+            await Peserta.destroy({ where: { 
           
               id: id
           
@@ -147,7 +145,7 @@ exports.readAll = async (req, res) => {
 
             const id = req.params.id
         
-            await kuekacang.findOne({where: { id: id}})
+            await Peserta.findOne({where: { id: id}})
         
             .then(data => {
         

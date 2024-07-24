@@ -23,7 +23,7 @@ exports.readAll = async (req, res) => {
 
     exports.create = async (req, res) => { 
  
-        console.log(req)
+        console.log(req.body)
         
          const data_user = {
         
