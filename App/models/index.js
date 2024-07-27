@@ -4,6 +4,7 @@ const Sequelize = require("sequelize");
 const sequelize = new Sequelize (dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
 host: dbConfig.HOST,
 dialect: dbConfig.dialect,
+operatorsAliases: false,
 });
 // membuat module 
 const db = {};
@@ -19,5 +20,6 @@ db.nastar = require("./nastar.model.js") (sequelize, Sequelize);
 db.putrisalju = require("./putrisalju.model.js") (sequelize, Sequelize);
 db.user = require("./user.model.js") (sequelize, Sequelize);
 db.transaksi = require("./transaksi.model.js") (sequelize, Sequelize);
-db.order = require("./order.model.js")(sequelize, Sequelize)
+db.order = require("./order.model.js")(sequelize, Sequelize);
+db.images = require("./image.model.js")(sequelize, Sequelize);
 module.exports = db; 
