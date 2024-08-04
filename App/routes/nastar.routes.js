@@ -7,6 +7,7 @@ module.exports = (app) => {
     router.put("/update/:id", nastar.update)
     router.delete("/delete/:id", nastar.delete)
     router.get("/readid/:id", nastar.readById)
+    router.get('/images', nastar.getImages);
 
     app.use("/api/nastar", router)
 

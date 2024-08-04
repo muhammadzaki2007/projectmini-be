@@ -5,4 +5,4 @@ module.exports = {
     PASSWORD: process.env.DB_PASS || "",
     DB: process.env.DB_DATABASE || "projekmini",
     dialect: process.env.SEQUELIZE_DIALECT || "mysql",
-};
+}; 

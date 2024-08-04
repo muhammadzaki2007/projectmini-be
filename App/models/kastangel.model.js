@@ -13,7 +13,7 @@ module.exports = (Sequelize, DataTypes)=>{
             type: DataTypes.STRING(50),
             allowNull: false
         },
-       harga:{
+        harga:{
             autoIncrement: false,
             type: DataTypes.TEXT,
             allowNull: false,
@@ -30,7 +30,13 @@ module.exports = (Sequelize, DataTypes)=>{
             type: DataTypes.TEXT,
             allowNull: true,
             primaryKey: false
-        }
+        },
+        type: {
+            type: DataTypes.STRING,
+          },
+        name: {
+            type: DataTypes.STRING,
+          }
     },{
         Sequelize,
         tableName : 'kastangel',

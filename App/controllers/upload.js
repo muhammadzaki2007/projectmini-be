@@ -32,7 +32,7 @@ const uploadFiles = (req, res) => {
       name: req.file.originalname,
       path: req.file.path,
       type: req.file.mimetype,
-    }).then((image) => {
+    }).then((Image) => {
       res.status(200).send(`File has been uploaded.`);
     }).catch((error) => {
       console.log(error);

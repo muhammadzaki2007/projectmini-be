@@ -30,7 +30,13 @@ module.exports = (Sequelize, DataTypes)=>{
             type: DataTypes.TEXT,
             allowNull: true,
             primaryKey: false
-        }
+        },
+        type: {
+            type: DataTypes.STRING,
+          },
+        name: {
+            type: DataTypes.STRING,
+          }
     },{
         Sequelize,
         tableName : 'lidahkucing',

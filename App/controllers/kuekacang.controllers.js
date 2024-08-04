@@ -1,172 +1,202 @@
 const { where } = require('sequelize');
+const fs = require("fs");
+const path = require("path");
+const multer = require("multer");
 const db = require('../models');
 const kuekacang = db.kuekacang
-
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'resources/static/assets/uploads');
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + path.extname(file.originalname)); // Menambahkan timestamp untuk nama file unik
+  }
+});
 
 exports.readAll = async (req, res) => {
 
 
-    await kuekacang.findAll({where: {id: "1" }})
-        .then(data => {
-            res.send(data);
-        })
-        .catch(err => {
-            res.status(500).send({
-                message:
-                    err.message || "Maaf, Terjadi kesalahan dalam pengambilan data."
-            });
-        });
-        
+  await kuekacang.findAll({ where: { id: "1" } })
+    .then(data => {
+      res.send(data);
+    })
+    .catch(err => {
+      res.status(500).send({
+        message:
+          err.message || "Maaf, Terjadi kesalahan dalam pengambilan data."
+      });
+    });
+
+}
+
+const upload = multer({ storage: storage }).single('file');
+//Create Data
+exports.create = (req, res) => {
+  upload(req, res, (err) => {
+    // memasukkan data ke database
+
+    const data_kuekacang = {
+      nama: req.body.nama,
+      harga: req.body.harga,
+      deskripsi: req.body.deskripsi,
+      rasa: req.body.rasa,
+    };
+
+    console.log("data_", data_kuekacang)
+
+    kuekacang.create({
+      elemenData: req.body.elemenData,
+      //kastangel
+      nama: req.body.nama,
+      harga: req.body.harga,
+      deskripsi: req.body.deskripsi,
+      rasa: req.body.rasa,
+      name: req.file.originalname,
+      path: req.file.path,
+      type: req.file.mimetype,
     }
 
-    //Create Data
+    ).then(data => {
 
-    exports.create = async (req, res) => { 
- 
-        console.log(req.body)
-        
-         const data_kuekacang = {
-        
-            elemenData: req.body.elemenData,
-            //kuekacang
-            nama: req.body.nama,
-            harga: req.body.harga,
-            deskripsi: req.body.deskripsi,
-            rasa: req.body.rasa,
-            
-        }
-        
-        console.log("data_",data_kuekacang)  
-        
-          await kuekacang.create(data_kuekacang) //menyimpan data_peserta ke table peserta
-        
-          .then(data => {
-        
-            res.send({
-        
-              message: "Data berhasil dimasukkan!"
-        
-            })
-        
-            })
-        
-          .catch(err => {
-        
-            res.status(500).send({
-        
-              message:
-        
-                err.message || "Some error occurred while creating data."
-        
-            });
-        
-          })
-        
-        }
+      res.send({
 
-        
-        //update data
+        message: "Data berhasil dimasukkan!"
 
-        exports.update = async (req, res) => {
+      })
 
-            const id = req.params.id
-          
-            await kuekacang.update(req.body, { where: { id: id}})
-          
-            .then(num => {
-          
-                num == 1 ? res.send({
-          
-                  message: "Data was updated successfully."
-          
-                }) : res.send({
-          
-                  message: `Cannot update Data with id=${id}. Maybe Data was not found or req.body is empty!`
-          
-                });
-          
-            })
-          
-            .catch(err => {
-          
-              res.status(500).send({
-          
-                message: `Error updating Data with id=${id}`,
-          
-                error: err
-          
-              })
-          
-            })
-          
-          }
+    })
 
-          //delete data
+      .catch(err => {
 
-          exports.delete = async (req, res) => {
+        res.status(500).send({
 
-            const id = req.params.id
-          
-            await kuekacang.destroy({ where: { 
-          
-              id: id
-          
-          }})
-          
-          .then(num => {
-          
-            num == 1 ? res.send({
-          
-              message: "Data was deleted successfully."
-          
-            }) : res.send({
-          
-              message: `Cannot delete Data with id=${id}. Maybe Data was not found or req.body is empty!`
-          
-            });
-          
-          })
-          
-            .catch(err => {
-          
-              res.status(500).send({
-          
-                message: `Error deleting Data with id=${id}`,
-          
-                error: err
-          
-              })
-          
-            })
-          
-          }
-          
-          //readById
+          message:
 
-          exports.readById = async (req, res) =>{
+            err.message || "Some error occurred while creating data."
 
-            const id = req.params.id
-        
-            await kuekacang.findOne({where: { id: id}})
-        
-            .then(data => {
-        
-              res.send(data);
-        
-            })
-        
-            .catch(err => {
-        
-              res.status(500).send({
-        
-                message:
-        
-                  err.message || "Some error occurred while retrieving data."
-        
-              });
-        
-            });
-        
-        }
+        });
+
+      })
+
+  })
+}
+
+
+//update data
+
+exports.update = async (req, res) => {
+
+  const id = req.params.id
+
+  await kuekacang.update(req.body, { where: { id: id } })
+
+    .then(num => {
+
+      num == 1 ? res.send({
+
+        message: "Data was updated successfully."
+
+      }) : res.send({
+
+        message: `Cannot update Data with id=${id}. Maybe Data was not found or req.body is empty!`
+
+      });
+
+    })
+
+    .catch(err => {
+
+      res.status(500).send({
+
+        message: `Error updating Data with id=${id}`,
+
+        error: err
+
+      })
+
+    })
+
+}
+
+//delete data
+
+exports.delete = async (req, res) => {
+
+  const id = req.params.id
+
+  await kuekacang.destroy({
+    where: {
+
+      id: id
+
+    }
+  })
+
+    .then(num => {
+
+      num == 1 ? res.send({
+
+        message: "Data was deleted successfully."
+
+      }) : res.send({
+
+        message: `Cannot delete Data with id=${id}. Maybe Data was not found or req.body is empty!`
+
+      });
+
+    })
+
+    .catch(err => {
+
+      res.status(500).send({
+
+        message: `Error deleting Data with id=${id}`,
+
+        error: err
+
+      })
+
+    })
+
+}
+
+//readById
+
+exports.readById = async (req, res) => {
+
+  const id = req.params.id
+
+  await kuekacang.findOne({ where: { id: id } })
+
+    .then(data => {
+
+      res.send(data);
+
+    })
+
+    .catch(err => {
+
+      res.status(500).send({
+
+        message:
+
+          err.message || "Some error occurred while retrieving data."
+
+      });
+
+    });
+
+}
+
+exports.getImages = async (req, res) => {
+  Image.findAll()
+    .then(images => {
+      res.status(200).json(images);
+    })
+    .catch(error => {
+      console.log(error);
+      res.status(500).send(`Error retrieving images: ${error}`);
+    });
+};
 
 

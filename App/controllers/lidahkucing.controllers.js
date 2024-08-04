@@ -1,6 +1,19 @@
 const { where } = require('sequelize');
+const fs = require("fs");
+const path = require("path");
+const multer = require("multer");
 const db = require('../models');
 const lidahkucing = db.lidahkucing
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'resources/static/assets/uploads');
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + path.extname(file.originalname)); // Menambahkan timestamp untuk nama file unik
+  }
+});
+
+
 
 
 exports.readAll = async (req, res) => {
@@ -21,48 +34,57 @@ exports.readAll = async (req, res) => {
 
     //Create Data
 
-    exports.create = async (req, res) => { 
- 
-        console.log(req.body)
-        
-         const data_lidahkucing = {
-        
-            elemenData: req.body.elemenData,
-            //lidahkucing
-            nama: req.body.nama,
-            harga: req.body.harga,
-            deskripsi: req.body.deskripsi,
-            rasa: req.body.rasa,
-            
+    const upload = multer({ storage: storage }).single('file');
+    //Create Data
+    exports.create = (req, res) => {
+      upload(req, res, (err) => {
+        // memasukkan data ke database
+    
+        const data_lidahkucing = {
+          nama: req.body.nama,
+          harga: req.body.harga,
+          deskripsi: req.body.deskripsi,
+          rasa: req.body.rasa,
+        };
+    
+        console.log("data_",data_lidahkucing) 
+    
+        lidahkucing.create({
+          elemenData: req.body.elemenData,
+          //kastangel
+          nama: req.body.nama,
+          harga: req.body.harga,
+          deskripsi: req.body.deskripsi,
+          rasa: req.body.rasa,
+          name: req.file.originalname,
+          path: req.file.path,
+          type: req.file.mimetype,
         }
-        
-        console.log("data_",data_lidahkucing)  
-        
-          await lidahkucing.create(data_lidahkucing) //menyimpan data_peserta ke table peserta
-        
-          .then(data => {
-        
-            res.send({
-        
-              message: "Data berhasil dimasukkan!"
-        
-            })
-        
-            })
-        
-          .catch(err => {
-        
-            res.status(500).send({
-        
-              message:
-        
-                err.message || "Some error occurred while creating data."
-        
-            });
-        
+    
+        ).then(data => {
+    
+          res.send({
+    
+            message: "Data berhasil dimasukkan!"
+    
           })
-        
-        }
+    
+        })
+    
+          .catch(err => {
+    
+            res.status(500).send({
+    
+              message:
+    
+                err.message || "Some error occurred while creating data."
+    
+            });
+    
+          })
+    
+      })
+    }
 
         
         //update data
@@ -169,4 +191,15 @@ exports.readAll = async (req, res) => {
         
         }
 
-
+        exports.getImages = async(req, res) => {
+          Image.findAll()
+            .then(images => {
+              res.status(200).json(images);
+            })
+            .catch(error => {
+              console.log(error);
+              res.status(500).send(`Error retrieving images: ${error}`);
+            });
+        };
+        
+      

@@ -7,6 +7,7 @@ module.exports = (app) => {
     router.put("/update/:id", kuesemprit.update)
     router.delete("/delete/:id", kuesemprit.delete)
     router.get("/readid/:id", kuesemprit.readById)
+    router.get('/images', kuesemprit.getImages);
 
     app.use("/api/kuesemprit", router)
 
