@@ -1,7 +1,7 @@
 const { where } = require('sequelize');
 const db = require('../models');
 const transaksi = db.transaksi
-
+const dtransaksi = db.dtransaksi
 
 exports.readAll = async (req, res) => {
 
@@ -31,20 +31,29 @@ exports.readAll = async (req, res) => {
            
             //transaksi
             order: req.body.order,
-            username: req.body.username,
-            alamat: req.body.alamat,
-            no_hp: req.body.no_hp,
             id_order: req.body.id_order,
             id_produk: req.body.id_produk,
             total_pembayaran: req.body.total_pembayaran,
-            model_pembayaran: req.body.model_pembayaran,
-            harga_ongkir: req.body.harga_ongkir,
-        }
+            metode_pembayaran: req.body.metode_pembayaran,
+         }
+        console.log(data_transaksi)  
+
         
-        console.log("data_",data_transaksi)  
+        await transaksi.create(data_transaksi) //menyimpan data_peserta ke table peserta
         
-          await transaksi.create(data_transaksi) //menyimpan data_peserta ke table peserta
+        const id_transaksi = await transaksi.findOne({
+          order: [['id', 'DESC']]
+        })
+        console.log("id =", id_transaksi.id);
+        const data_dtransaksi = {
+            id_transaksi: id_transaksi.id,
+            waktu: "11:14",
+            activity: "Transaksi",
+            detail: "pembelian produk  " + req.body.order + "dengan total biaya  " + req.body.total_pembayaran + "berhasil"
+         }    
+        console.log("data_",data_dtransaksi)  
         
+          await dtransaksi.create(data_dtransaksi) 
           .then(data => {
         
             res.send({

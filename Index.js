@@ -4,7 +4,7 @@ const cors = require('cors');
 const db = require('./App/models');
 
 const app = express()
-const port = 3001
+const port = 3002
 
 app.use(cors());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
@@ -49,8 +49,12 @@ require("./App/routes/nastar.routes")(app)
 require("./App/routes/putrisalju.routes")(app)
 require("./App/routes/user.routes")(app)
 require("./App/routes/transaksi.routes")(app)
+require("./App/routes/detailtransaksi")(app)
 require("./App/routes/web")(app)
-
+require("./App/routes/order.routes")(app)
+require("./App/routes/stok.routes")(app)
+require("./App/routes/admin.routes")(app)
+require("./App/routes/report.routes")(app)
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)

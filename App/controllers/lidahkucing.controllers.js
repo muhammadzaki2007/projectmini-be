@@ -17,7 +17,7 @@ const storage = multer.diskStorage({
 
 
 exports.readAll = async (req, res) => {
-
+ 
   
     await lidahkucing.findAll({where: {id: "1" }})
         .then(data => {

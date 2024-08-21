@@ -1,7 +1,8 @@
-const { sequelize, DataTypes } = require("sequelize")
+const { Sequelize, DataTypes } = require("sequelize");
+const { kastangel, putrisalju, kuekacang, lidahkucing, kuesemprit } = require(".");
 
- module.exports = (sequelize, DataTypes)=>
-    {const transaksi = sequelize.define("transaksi",{
+module.exports = (Sequelize, DataTypes)=>{
+    const stok = Sequelize.define("stok ",{
         id:{
            autoIncrement: true,
            type: DataTypes.BIGINT,
@@ -9,36 +10,43 @@ const { sequelize, DataTypes } = require("sequelize")
            primaryKey: true
         },
 
-        order:{
+        nastar_stok:{
             type: DataTypes.STRING(50),
             allowNull: true
         },
-        id_order:{
-            type: DataTypes.STRING(50),
-            allowNull: true
-        },
-        id_produk:{
+       kastangel_stok:{
             autoIncrement: false,
             type: DataTypes.TEXT,
             allowNull: true,
             primaryKey: false
         },
-        total_pembayaran:{
+        putrisalju_stok:{
             autoIncrement: false,
             type: DataTypes.TEXT,
             allowNull: true,
             primaryKey: false
         },
-        metode_pembayaran:{
+        kuekacang_stok:{
             autoIncrement: false,
             type: DataTypes.TEXT,
             allowNull: true,
             primaryKey: false
         },
-        
+        lidahkucing_stok: {
+            autoIncrement: false,
+            type: DataTypes.TEXT,
+            allowNull: true,
+            primaryKey: false
+          },
+        kuesemprit_stok: {
+            autoIncrement: false,
+            type: DataTypes.TEXT,
+            allowNull: true,
+            primaryKey: false
+          }
     },{
-        sequelize,
-        tableName : 'transaksi',
+        Sequelize,
+        tableName : 'stok',
         timestamps: true,
         indexes: [
             {
@@ -46,12 +54,13 @@ const { sequelize, DataTypes } = require("sequelize")
               unique: true,
               using: "BTREE",
               fields: [
-                {name: "id"},    
+                {name: "id"},
               ]
             },
-            
         ]
-        
     })
-    return transaksi;
+    return stok;
+
+
+    
 }

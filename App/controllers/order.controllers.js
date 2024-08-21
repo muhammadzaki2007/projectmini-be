@@ -31,9 +31,9 @@ exports.readAll = async (req, res) => {
            
             //order
             id_order: req.body.id_order,
-            id_produk: req.body.id_order,
-            total_belanja: req.body.id_transaksi,
-            subtotal: req.body.id_transaksi,
+            id_produk: req.body.id_produk, 
+            total_belanja: req.body.total_belanja,
+            subtotal: req.body.subtotal,
         }
         
         console.log("data_",data_order)  

@@ -1,76 +1,12 @@
 const { where } = require('sequelize');
-const fs = require("fs");
-const path = require("path");
-const multer = require("multer");
 const db = require('../models');
-const Barang = db.barang
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, 'resources/static/assets/uploads');
-  },
-  filename: function (req, file, cb) {
-    cb(null, Date.now() + path.extname(file.originalname)); // Menambahkan timestamp untuk nama file unik
-  }
-});
+const stok = db.stok
 
-const upload = multer({ storage: storage }).single('file');
-//Create Data
-exports.create = (req, res) => {
-  upload(req, res, (err) => {
-    
-    // memasukkan data ke database
-
-    const data_barang = {
-      nama: req.body.nama,
-      harga: req.body.harga,
-      deskripsi: req.body.deskripsi,
-      rasa: req.body.rasa,
-      stok: req.body.stok,
-    };
-
-    console.log("data_",data_barang) 
-
-    Barang.create({
-      elemenData: req.body.elemenData,
-      //kastangel
-      nama: req.body.nama,
-      harga: req.body.harga,
-      deskripsi: req.body.deskripsi,
-      rasa: req.body.rasa,
-      name: req.file.originalname,
-      path: req.file.path,
-      type: req.file.mimetype,
-    }
-
-    ).then(data => {
-
-      res.send({
-
-        message: "Data berhasil dimasukkan!"
-
-      })
-
-    })
-
-      .catch(err => {
-
-        res.status(500).send({
-
-          message:
-
-            err.message || "Some error occurred while creating data."
-
-        });
-
-      })
-
-  })
-}
 
 exports.readAll = async (req, res) => {
 
 
-    await Barang.findAll({where: {id: "1" }})
+    await stok.findAll({where: {id: "1" }})
         .then(data => {
             res.send(data);
         })
@@ -85,7 +21,51 @@ exports.readAll = async (req, res) => {
 
     //Create Data
 
-   
+    exports.create = async (req, res) => { 
+ 
+        console.log(req.body)
+        
+         const data_stok = {
+        
+            elemenData: req.body.elemenData,
+           
+            //stok
+            nastar_stok: req.body.nastar_stok,
+            kastangel_stok: req.body.kastangel_stok,
+            putrisalju_stok: req.body.putrisalju_stok,
+            kuekacang_stok: req.body.kuekacang_stok,
+            lidahkucing_stok: req.body.lidahkucing_stok,
+            kuesemprit_stok: req.body.kuesemprit_stok,
+        }
+        
+        console.log("data_",data_stok)  
+        
+          await stok.create(data_stok) //menyimpan data_peserta ke table peserta
+        
+          .then(data => {
+        
+            res.send({
+        
+              message: "Data berhasil dimasukkan!"
+        
+            })
+        
+            })
+        
+          .catch(err => {
+        
+            res.status(500).send({
+        
+              message:
+        
+                err.message || "Some error occurred while creating data."
+        
+            });
+        
+          })
+        
+        }
+
         
         //update data
 
@@ -93,7 +73,7 @@ exports.readAll = async (req, res) => {
 
             const id = req.params.id
           
-            await Barang.update(req.body, { where: { id: id}})
+            await stok.update(req.body, { where: { id: id}})
           
             .then(num => {
           
@@ -129,7 +109,7 @@ exports.readAll = async (req, res) => {
 
             const id = req.params.id
           
-            await Barang.destroy({ where: { 
+            await stok.destroy({ where: { 
           
               id: id
           
@@ -169,7 +149,7 @@ exports.readAll = async (req, res) => {
 
             const id = req.params.id
         
-            await Barang.findOne({where: { id: id}})
+            await stok.findOne({where: { id: id}})
         
             .then(data => {
         
@@ -192,14 +172,3 @@ exports.readAll = async (req, res) => {
         }
 
 
-        exports.getImages = async (req, res) => {
-          Image.findAll()
-            .then(images => {
-              res.status(200).json(images);
-            })
-            .catch(error => {
-              console.log(error);
-              res.status(500).send(`Error retrieving images: ${error}`);
-            });
-        };
-        

@@ -1,7 +1,7 @@
-const { sequelize, DataTypes } = require("sequelize")
+const { Sequelize, DataTypes } = require("sequelize");
 
- module.exports = (sequelize, DataTypes)=>
-    {const transaksi = sequelize.define("transaksi",{
+ module.exports = (Sequelize, DataTypes)=>{
+    const dtransaksi = Sequelize.define("detailtransaksi ",{
         id:{
            autoIncrement: true,
            type: DataTypes.BIGINT,
@@ -9,36 +9,31 @@ const { sequelize, DataTypes } = require("sequelize")
            primaryKey: true
         },
 
-        order:{
+        id_transaksi:{
             type: DataTypes.STRING(50),
             allowNull: true
         },
-        id_order:{
-            type: DataTypes.STRING(50),
-            allowNull: true
-        },
-        id_produk:{
+        waktu:{
             autoIncrement: false,
             type: DataTypes.TEXT,
             allowNull: true,
             primaryKey: false
         },
-        total_pembayaran:{
+        activity:{
             autoIncrement: false,
             type: DataTypes.TEXT,
             allowNull: true,
             primaryKey: false
         },
-        metode_pembayaran:{
+        detail:{
             autoIncrement: false,
             type: DataTypes.TEXT,
             allowNull: true,
             primaryKey: false
-        },
-        
+        }    
     },{
-        sequelize,
-        tableName : 'transaksi',
+        Sequelize,
+        tableName : 'detaltransaksi',
         timestamps: true,
         indexes: [
             {
@@ -49,9 +44,8 @@ const { sequelize, DataTypes } = require("sequelize")
                 {name: "id"},    
               ]
             },
-            
-        ]
-        
-    })
-    return transaksi;
+        ],
+    
+})
+    return dtransaksi;
 }

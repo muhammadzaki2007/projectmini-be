@@ -1,81 +1,17 @@
 const { where } = require('sequelize');
-const fs = require("fs");
-const path = require("path");
-const multer = require("multer");
 const db = require('../models');
-const Barang = db.barang
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, 'resources/static/assets/uploads');
-  },
-  filename: function (req, file, cb) {
-    cb(null, Date.now() + path.extname(file.originalname)); // Menambahkan timestamp untuk nama file unik
-  }
-});
-
-const upload = multer({ storage: storage }).single('file');
-//Create Data
-exports.create = (req, res) => {
-  upload(req, res, (err) => {
-    
-    // memasukkan data ke database
-
-    const data_barang = {
-      nama: req.body.nama,
-      harga: req.body.harga,
-      deskripsi: req.body.deskripsi,
-      rasa: req.body.rasa,
-      stok: req.body.stok,
-    };
-
-    console.log("data_",data_barang) 
-
-    Barang.create({
-      elemenData: req.body.elemenData,
-      //kastangel
-      nama: req.body.nama,
-      harga: req.body.harga,
-      deskripsi: req.body.deskripsi,
-      rasa: req.body.rasa,
-      name: req.file.originalname,
-      path: req.file.path,
-      type: req.file.mimetype,
-    }
-
-    ).then(data => {
-
-      res.send({
-
-        message: "Data berhasil dimasukkan!"
-
-      })
-
-    })
-
-      .catch(err => {
-
-        res.status(500).send({
-
-          message:
-
-            err.message || "Some error occurred while creating data."
-
-        });
-
-      })
-
-  })
-}
+const login = db.login
+const register = db.register
 
 exports.readAll = async (req, res) => {
 
 
-    await Barang.findAll({where: {id: "1" }})
+    await login.findAll({where: {id: "1" }})
         .then(data => {
             res.send(data);
         })
         .catch(err => {
-            res.status(500).send({
+            res.status(500).send({ 
                 message:
                     err.message || "Maaf, Terjadi kesalahan dalam pengambilan data."
             });
@@ -85,7 +21,63 @@ exports.readAll = async (req, res) => {
 
     //Create Data
 
-   
+    exports.create = async (req, res) => { 
+ 
+        console.log(req.body)
+        
+         const data_login = {
+        
+            elemenData: req.body.elemenData,
+           
+            //transaks i
+            order: req.body.order,
+            id_order: req.body.id_order,
+            id_produk: req.body.id_produk,
+            total_pembayaran: req.body.total_pembayaran,
+            metode_pembayaran: req.body.metode_pembayaran,
+         }
+        console.log(data_login)  
+
+        const id_login = await login.findOne({
+          order: [['id', 'DESC']]
+        })
+        console.log("id =", id_login.id);
+
+          await login.create(data_login) //menyimpan data_peserta ke table peserta
+        
+          const data_register = {
+            id_login: id_login.id,
+            waktu: "11:14",
+            activity: "login",
+            detail: "pembelian produk  " + req.body.order + "dengan total biaya  " + req.body.total_pembayaran + "berhasil"
+         }    
+        console.log("data_",data_register)  
+        
+          await register.create(data_register) 
+          .then(data => {
+        
+            res.send({
+        
+              message: "Data berhasil dimasukkan!"
+        
+            })
+        
+            })
+        
+          .catch(err => {
+        
+            res.status(500).send({
+        
+              message:
+        
+                err.message || "Some error occurred while creating data."
+        
+            });
+        
+          })
+        
+        }
+
         
         //update data
 
@@ -93,7 +85,7 @@ exports.readAll = async (req, res) => {
 
             const id = req.params.id
           
-            await Barang.update(req.body, { where: { id: id}})
+            await login.update(req.body, { where: { id: id}})
           
             .then(num => {
           
@@ -129,7 +121,7 @@ exports.readAll = async (req, res) => {
 
             const id = req.params.id
           
-            await Barang.destroy({ where: { 
+            await login.destroy({ where: { 
           
               id: id
           
@@ -169,7 +161,7 @@ exports.readAll = async (req, res) => {
 
             const id = req.params.id
         
-            await Barang.findOne({where: { id: id}})
+            await login.findOne({where: { id: id}})
         
             .then(data => {
         
@@ -192,14 +184,3 @@ exports.readAll = async (req, res) => {
         }
 
 
-        exports.getImages = async (req, res) => {
-          Image.findAll()
-            .then(images => {
-              res.status(200).json(images);
-            })
-            .catch(error => {
-              console.log(error);
-              res.status(500).send(`Error retrieving images: ${error}`);
-            });
-        };
-        
